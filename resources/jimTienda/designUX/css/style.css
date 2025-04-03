@@ -363,7 +363,7 @@ body.mobile .swiper-container.page-height .swiper-pagination {
 
 .cell-view {
 	display: table-cell;
-	vertical-align: middle;
+	vertical-align: top;
 	width: 10000px;
 }
 
@@ -2088,7 +2088,8 @@ form {
 .swiper-slide {
     position: relative;
     background-size: cover;
-    background-position: center center;
+	background-position: center -250px;
+	background-repeat: no-repeat;
 }
 
 .swiper-slide::before {
