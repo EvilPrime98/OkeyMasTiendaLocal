@@ -654,7 +654,8 @@ body.mobile .fixed-background {
 
 .simple-article.light.transparent,
 .light.transparent {
-	color: rgba(255, 255, 255, .8);
+	color: rgba(255, 255, 255, 1);
+	text-shadow: 2px 2px 2px rgba(0, 0, 0, .5);
 }
 
 .simple-article.light.fulltransparent,
@@ -2087,7 +2088,7 @@ form {
 .swiper-slide {
     position: relative;
     background-size: cover;
-    background-position: center -50px;
+    background-position: center center;
 }
 
 .swiper-slide::before {
