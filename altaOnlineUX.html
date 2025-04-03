@@ -1,0 +1,1900 @@
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+
+
+<!-- Mirrored from gestplus.okmas.net/GestPlus/altaOnlineUX by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 10:35:36 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<head>
+  <meta charset="UTF-8">
+  <meta title="Okeymas - Alta de usuario">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <link rel="shortcut icon" href="resources/image/icon.png" type="image/x-icon">
+<link rel="icon" href="resources/image/icon.png" type="image/x-icon">
+  <link rel="stylesheet" href="resources/altasWeb/styles.min.css" />
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  <script src="../../igniteui.com/js/modernizr.min.js"></script>
+<script type="text/javascript" 	src="../../www.gstatic.com/charts/loader.js"></script>
+<script src="../../code.jquery.com/jquery-1.12.4.js"></script> 
+<script src="../../code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script 	src="../../cdn-na.infragistics.com/igniteui/latest/js/infragistics.core.js"></script>
+<script 	src="../../cdn-na.infragistics.com/igniteui/latest/js/infragistics.dv.js"></script>
+<script 	src="../../cdn-na.infragistics.com/igniteui/latest/js/infragistics.lob.js"></script>
+
+
+<link 	href="resources/style/infragistics.ui.chart.css" 	rel="stylesheet"></link>
+<script 	src="resources/script/infragistics.ui.chart.js"></script>
+<link rel="stylesheet" href="../../code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+
+<script type="text/javascript" 	src="resources/yui/2.8.0r4/yuiloader/yuiloader-min.js"></script> 
+<script src="../../unpkg.com/sweetalert%402.1.2/dist/sweetalert.min.js"></script> 
+<script src="../../cdnjs.cloudflare.com/ajax/libs/bowser/1.9.4/bowser.min.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+
+
+if(location.search=="") {
+	location.href=location.href + "?auto=1";
+}else if(location.search=="?okeyhome"){
+	traeCuotas(40);
+}
+
+var ultimoPaso="";
+var nUltimoPaso=0;
+var clienteNuevo=true; 
+var clientePotencial=false;
+var recibosPendientes=false;
+var formaPago;
+var codigoOK = 1;
+var purchaseAltaWeb = "";
+var pagaYa = 0;
+var validaSelectCuota=false; 
+
+var pagoOK = '0';
+
+// Para salir del Iframe
+//if (top != self) {
+//	top.location.href = location.href;
+//}
+
+
+//para poder tener un placeholder en la fecha de nacimiento:
+
+	/*window.addEventListener('load', function() { 
+
+	
+		
+		document.getElementById('fNacim').type = 'text';
+
+		document.getElementById('fNacim').addEventListener('blur', function() {
+
+			document.getElementById('fNacim').type = 'text';
+
+		});
+
+		document.getElementById('fNacim').addEventListener('focus', function() {
+
+			document.getElementById('fNacim').type = 'date';
+			
+
+		});
+		
+		
+
+	});*/
+
+	function fn_add_option_select() {
+
+		//INSTALACION
+
+		var optionI = document.createElement("option");
+		optionI.text = "Elige un centro:";
+		optionI.value = "instala";
+		optionI.disabled = "selected";
+		var selectI = document.getElementById("select-location");
+		selectI.prepend(optionI);
+		$('#select-location').val("instala");
+
+		//CONOCIDO 
+
+		var optionC = document.createElement("option");
+		optionC.text = "¿Cómo nos has conocido?";
+		optionC.value = "conocido";
+		optionC.disabled = "selected";
+		var select = document.getElementById("idVieneDe");
+		select.prepend(optionC);
+		$('#idVieneDe').val("conocido");
+
+		// OBJETIVO 
+
+		var optionO = document.createElement("option");
+		optionO.text = "¿Cuál es tu objetivo físico?";
+		optionO.value = "objetivo";
+		optionO.disabled = "selected";
+		var select = document.getElementById("idObjetivo");
+		select.prepend(optionO);
+		$('#idObjetivo').val("objetivo");
+
+		//SEXO
+
+		var optionS = document.createElement("option");
+		optionS.text = "Sexo";
+		optionS.value = "sexo";
+		optionS.disabled = "selected";
+		var selectS = document.getElementById("idSexo");
+		selectS.prepend(optionS);
+		$('#idSexo').val("sexo");
+	}
+
+	/*PASO 2: CUOTAS*/
+
+	function aplicarCodPromo() {
+
+		if ($("#codPromo").val() == "") {
+			swal("Por favor, introduzca un código promocional.");
+			return;
+		}
+
+		var params = {};
+		params["idInstalacion"] = $("#select-location").val();
+		params["codPromo"] = $("#codPromo").val();
+		$
+				.ajax({
+					url : "/GestPlus/findCuotaByCodPromo",
+					type : "POST",
+					data : params,
+					success : function(data, textStatus) {
+
+						if (data.totalRecords == 0) {
+							swal("No existe ninguna cuota asociada a ese código promocional.");
+							traeCuotas(null);
+						}
+
+						$("#descCuota1").empty();
+						$("#descCuota2").empty();
+						$("#descCuota3").empty();
+						
+						$("#titulo1").empty();
+						$("#titulo2").empty();
+						$("#titulo3").empty();
+						
+						
+						$("#precioSinPromo1").empty();
+						$("#precioSinPromo2").empty();
+						$("#precioSinPromo3").empty();
+						
+// 						document.getElementById("c1").style.display = "none";
+// 						document.getElementById("c2").style.display = "none";
+// 						document.getElementById("c3").style.display = "none";
+						
+
+						$.each(
+										data.listCuotaOnline,
+										function(index, value) {
+
+											if (index < data.totalRecords) {
+
+												if (index == 0) {
+													document
+															.getElementById("titulo1").innerHTML = value.titulo;
+													if (value.detalleCuota.detalle1 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle1
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle2 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle2
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle3 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle3
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle4 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle4
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle5 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle5
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle6 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle6
+																				+ "</p>");
+													}
+
+													if (value.precioPromo > 0) {
+														$("#precioPromo1")
+																.val(
+																		parseFloat(
+																				value.precioPromo)
+																				.toFixed(
+																						2)
+																				+ "");
+													}
+
+													if (value.precioSalida > 0) {
+														document
+																.getElementById("precioSinPromo1").innerHTML = parseFloat(
+																value.precioSalida)
+																.toFixed(2)
+																+ "\u20ac";
+													} else {
+														document
+																.getElementById("precioSinPromo1").innerHTML = "0.00";
+													}
+
+													$("#idCuota1")
+															.val(value.id);
+
+												} else if (index == 1) {
+													document
+															.getElementById("titulo2").innerHTML = value.titulo;
+
+													if (value.detalleCuota.detalle1 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle1
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle2 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle2
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle3 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle3
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle4 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle4
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle5 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle5
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle6 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle6
+																				+ "</p>");
+													}
+
+													if (value.precioPromo > 0) {
+														$("#precioPromo2")
+																.val(
+																		parseFloat(
+																				value.precioPromo)
+																				.toFixed(
+																						2));
+													}
+													if (value.precioSalida > 0) {
+														document
+																.getElementById("precioSinPromo2").innerHTML = parseFloat(
+																value.precioSalida)
+																.toFixed(2)
+																+ "\u20ac";
+													} else {
+														document
+																.getElementById("precioSinPromo2").innerHTML = "0.00";
+													}
+
+													$("#idCuota2")
+															.val(value.id);
+
+												} else if (index == 2) {
+													document
+															.getElementById("titulo3").innerHTML = value.titulo;
+													if (value.detalleCuota.detalle1 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle1
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle2 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle2
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle3 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle3
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle4 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle4
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle5 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle5
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle6 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle6
+																				+ "</p>");
+													}
+
+													if (value.precioPromo > 0) {
+														$("#precioPromo3")
+																.val(
+																		parseFloat(
+																				value.precioPromo)
+																				.toFixed(
+																						2));
+													}
+
+													if (value.precioSalida > 0) {
+														document
+																.getElementById("precioSinPromo3").innerHTML = parseFloat(
+																value.precioSalida)
+																.toFixed(2)
+																+ "\u20ac";
+													} else {
+														document
+																.getElementById("precioSinPromo3").innerHTML = "0.00";
+													}
+
+													$("#idCuota3")
+															.val(value.id);
+												}
+											}
+										});
+					},
+					error : function(data, textStatus) {
+
+					},
+					dataType : "json"
+				});
+	}
+
+	function traeCuotas(instalacion) {
+
+		var params = {};
+		if(instalacion==null){
+			params["idInstalacion"] = $("#select-location").val();
+		}else{
+			params["idInstalacion"] = instalacion;	
+		}
+		$
+				.ajax({
+					url : "/GestPlus/getCuotasByInst",
+					type : "POST",
+					data : params,
+					success : function(data, textStatus) {
+						document.getElementById("location").innerHTML = data.direccionCentro;
+						document.getElementById("telephone").innerHTML = data.telefonoCentro;
+						var s = document.getElementsByName("inst")[0];
+						for (i = 0; i < s.options.length; i++) {
+							if (s.options[i].selected) {
+								document.getElementById("centroElegido").innerHTML = s.options[i].innerHTML;
+								break;
+							}
+						}
+						if(instalacion==40){
+							nextPrev(1);
+						}
+						$
+								.each(
+										data.listCuotaOnline,
+										function(index, value) {
+
+											if (index < data.totalRecords) {
+
+												if (index == 0) { 
+													//document.getElementById("c1").style.display = "block";
+													document
+															.getElementById("titulo1").innerHTML = value.titulo;
+													if (value.detalleCuota.detalle1 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle1
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle2 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle2
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle3 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle3
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle4 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle4
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle5 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle5
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle6 != "") {
+														$("#descCuota1")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle6
+																				+ "</p>");
+													}
+
+													if (value.precioPromo > 0) {
+														$("#precioPromo1")
+																.val(
+																		parseFloat(
+																				value.precioPromo)
+																				.toFixed(
+																						2)
+																				+ "");
+													}
+													if (value.precioSalida > 0) {
+														document
+																.getElementById("precioSinPromo1").innerHTML = parseFloat(
+																value.precioSalida)
+																.toFixed(2);
+													} else {
+														document
+																.getElementById("precioSinPromo1").innerHTML = "0.00";
+													}
+
+													$("#idCuota1")
+															.val(value.id);
+
+												} else if (index == 1) {
+													//document.getElementById("c2").style.display = "block";
+													document
+															.getElementById("titulo2").innerHTML = value.titulo;
+
+													if (value.detalleCuota.detalle1 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle1
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle2 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle2
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle3 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle3
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle4 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle4
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle5 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle5
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle6 != "") {
+														$("#descCuota2")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle6
+																				+ "</p>");
+													}
+
+													if (value.precioPromo > 0) {
+														$("#precioPromo2")
+																.val(
+																		parseFloat(
+																				value.precioPromo)
+																				.toFixed(
+																						2));
+													}
+													if (value.precioSalida > 0) {
+
+														document
+																.getElementById("precioSinPromo2").innerHTML = parseFloat(
+																value.precioSalida)
+																.toFixed(2);
+													} else {
+														document
+																.getElementById("precioSinPromo2").innerHTML = "0.00";
+													}
+
+													$("#idCuota2")
+															.val(value.id);
+
+												} else if (index == 2) { 
+													//document.getElementById("c3").style.display = "block";
+													document
+															.getElementById("titulo3").innerHTML = value.titulo;
+
+													if (value.detalleCuota.detalle1 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle1
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle2 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle2
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle3 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle3
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle4 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle4
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle5 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle5
+																				+ "</p>");
+													}
+													if (value.detalleCuota.detalle6 != "") {
+														$("#descCuota3")
+																.append(
+																		"<p>- "
+																				+ value.detalleCuota.detalle6
+																				+ "</p>");
+													}
+
+													if (value.precioPromo > 0) {
+														$("#precioPromo3")
+																.val(
+																		parseFloat(
+																				value.precioPromo)
+																				.toFixed(
+																						2));
+													}
+
+													if (value.precioSalida > 0) {
+														document
+																.getElementById("precioSinPromo3").innerHTML = parseFloat(
+																value.precioSalida)
+																.toFixed(2);
+													} else {
+														document
+																.getElementById("precioSinPromo3").innerHTML = "0.00";
+													}
+
+													$("#idCuota3")
+															.val(value.id);
+
+												}
+											}
+										});
+					},
+					error : function(data, textStatus) {
+
+					},
+					dataType : "json"
+				});
+
+	}
+
+	function clickImagen(cuota) {
+		validaSelectCuota=true;
+		var params = {};
+
+		if (cuota == 1) {
+			params["idCuota"] = $("#idCuota1").val();
+			$("#idCuota").val($("#idCuota1").val());
+		} else if (cuota == 2) {
+			params["idCuota"] = $("#idCuota2").val();
+			$("#idCuota").val($("#idCuota2").val());
+		} else if (cuota == 3) {
+			params["idCuota"] = $("#idCuota3").val();
+			$("#idCuota").val($("#idCuota3").val());
+		}
+
+		$
+				.ajax({
+					url : "/GestPlus/getCuotaElegida",
+					type : "POST",
+					data : params,
+					success : function(data, textStatus) {
+
+						document.getElementById("prorrateo").innerHTML = parseFloat(
+								data.totalProrrateo).toFixed(2);
+						document.getElementById("matricula").innerHTML = parseFloat(
+								data.cuota.matricula).toFixed(2);
+						document.getElementById("total").innerHTML = parseFloat(
+								data.totalPagarAhora).toFixed(2);
+						document.getElementById("cuotaPosterior").innerHTML = parseFloat(
+								data.cuota.precioPromo).toFixed(2);
+						document.getElementById("periodicidad").innerHTML = data.cuota.formaPago.formaPago;
+
+						formaPago = data.cuota.formaPago.numMeses;
+						
+						if(data.cuota.tipoCuota == 'Fija'){
+							document.getElementById("mesesPagados").innerHTML = "Tu cuota seleccionada";
+						}else{
+							document.getElementById("mesesPagados").innerHTML = "Parte proporcional de este mes";
+						}
+					},
+					error : function(data, textStatus) {
+
+					},
+					dataType : "json"
+				});
+
+		return false;
+	}
+
+	/*
+	 * PASO 3: ENVÍO CORREO CÓD VERIFICACIÓN
+	 */
+
+	var envioCodigoVerif = function() {
+		clientePotencial = false;
+
+		var params = {};
+		params["email"] = $("#email").val();
+		params["idInstalacion"] = $("#select-location").val();
+
+		$
+				.ajax({
+					url : "/GestPlus/comprobacionesPrevias",
+					type : "POST",
+					data : params,
+					success : function(data, textStatus) {
+
+						var errorMessage = data.error;
+						if (typeof (errorMessage) !== "undefined"
+								&& errorMessage !== null && errorMessage !== '') {
+							if (errorMessage == "clienteAlta-recibosPendientes") {// no mostramos el error porque aunq esté de baja o tenga recibos pendientes, dejamos que continúe con el proceso
+								recibosPendientes = true;
+								clienteNuevo = false;
+								swal("Hola, ya tenemos registrado tu email. Si no es este tu email, pon otro o envía un email al centro y nos ponemos en contacto. Gracias.");
+							} else if (errorMessage == "clienteAlta") {
+								clienteNuevo = false;
+								swal("Hola, ya tenemos registrado tu email. Si no es este tu email, pon otro o envía un email al centro y nos ponemos en contacto. Gracias.");
+							} else if (errorMessage == "clientePotencial") {
+								clienteNuevo = true;
+								clientePotencial = true;
+								swal("Hemos enviado un código de verificación al correo electrónico indicado.");
+							} else {
+								clienteNuevo = false;
+								swal("Hola "
+										+ errorMessage
+										+ ", ya tenemos registrado tu email. Si es correcto, no será necesario rellenar tus datos. Al pasar por la instalación tienes que firmar tu nueva hoja de inscripción. Hemos enviado un código de verificación al correo electrónico indicado..");
+								
+								//$("h6").html("Ya tenemos tu datos " + errorMessage);
+								document.getElementById("completaDatos").innerHTML = "Ya tenemos tu datos " + errorMessage;
+								document.getElementById("dni").style.display = "none";
+								document.getElementById("dni").required = false;
+								document.getElementById("nombre").style.display = "none";
+								document.getElementById("nombre").required = false;
+								document.getElementById("password").style.display = "none";
+								document.getElementById("password").required = false;
+								document.getElementById("apellidos").style.display = "none";
+								document.getElementById("apellidos").required = false;
+								document.getElementById("fNacim").style.display = "none";
+								document.getElementById("fNacim").required = false;
+								document.getElementById("movil").style.display = "none";
+								document.getElementById("movil").required = false;
+								document.getElementById("idSexo").style.display = "none";
+								document.getElementById("objCon").style.display = "none";
+							}
+						} else {
+							clienteNuevo = true;
+							swal("Hemos enviado un código de verificación al correo electrónico indicado.");
+						}
+					},
+					error : function(data, textStatus) {
+					},
+					dataType : "json"
+				});
+	};
+
+	var fn_comprobarCodVerif = function() {
+		var params = {};
+		if ($("#codigoVerif").val() != "") {
+			params["codVerif"] = $("#codigoVerif").val();
+			params["email"] = $("#email").val();
+			$.ajax({
+				url : "/GestPlus/comprobarCodVerif",
+				type : "POST",
+				data : params,
+				// myDataTable migth not exist
+				success : function(data, textStatus) {
+					var errorMessage = data.error;
+					if (typeof (errorMessage) !== "undefined"
+							&& errorMessage !== null && errorMessage !== '') {
+						nextPrev(-1);
+						swal("", "Error: " + errorMessage, "warning");
+					}
+				},
+				dataType : "json"
+			});
+
+		} else {
+			nextPrev(-1);
+			swal(
+					"",
+					"Debe introducir el código de verificación que le hemos enviado al correo electrónico.",
+					"warning");
+		}
+	}
+
+	/*
+	 *  PASO 4: GUARDAR DATOS CLIENTE
+	 */
+
+	function fn_saveDataClient() {
+		$("#formaPagoCuota").val(formaPago);
+
+		altas = [];
+
+		alta1["password"] = $("#password").val();
+		
+		alta1["nombre"] = $("#nombre").val();
+		alta1["apellidos"] = $("#apellidos").val();
+		alta1["dni"] = $("#dni").val();
+		alta1["dniContr"] = $("#dni").val();
+
+		alta1["fechaNacimiento"] = $("#fNacim").val();
+
+		alta1["sexo"] = $("#idSexo").val();
+		alta1["movil"] = $("#movil").val();
+		alta1["email"] = $("#email").val();
+		alta1["publi"] = 0;
+
+		alta1["conocido"] = $("#idVieneDe").val();
+		alta1["objetivo"] = $("#idObjetivo").val();
+
+		alta1["tipoCurso"] = "Normal";
+		alta1["procedencia"] = "Alta";
+
+		alta1["dniSocio"] = $("#idDniAmigo").val();
+
+		alta1["formaPago"] = "V";
+
+		altas.push(alta1);
+
+		var params = {};
+
+		params["idCuota"] = $("#idCuota").val();
+
+		/*if ($("#formaPagoCuota").val() == "Mensual")
+			params["altasClientes[0].mesesPago"] = 1;
+		else if ($("#formaPagoCuota").val() == "Trimestral")
+			params["altasClientes[0].mesesPago"] = 3;
+		else if ($("#formaPagoCuota").val() == "Anual")
+			params["altasClientes[0].mesesPago"] = 12;
+        else if ($("#formaPagoCuota").val() == "Bimensual")
+            params["altasClientes[0].mesesPago"] = 2;
+		else if ($("#formaPagoCuota").val() == "Semestral")
+            params["altasClientes[0].mesesPago"] = 6;*/
+
+		params["altasClientes[0].mesesPago"] = $("#formaPagoCuota").val();
+		
+		params["altasClientes[0].password"] = altas[0].password;
+
+		params["altasClientes[0].nombre"] = altas[0].nombre;
+		params["altasClientes[0].apellidos"] = altas[0].apellidos;
+		params["altasClientes[0].dni"] = altas[0].dni;
+		params["altasClientes[0].dniContr"] = altas[0].dniContr;
+
+		params["altasClientes[0].fechaNacimiento"] = altas[0].fechaNacimiento;
+		params["altasClientes[0].domicilio"] = "";
+		params["altasClientes[0].domicilio2"] = "";
+		params["altasClientes[0].dniPadre"] = "";
+
+		params["altasClientes[0].sexo"] = altas[0].sexo;
+		params["altasClientes[0].movil"] = altas[0].movil;
+		params["altasClientes[0].email"] = altas[0].email;
+		params["altasClientes[0].publi"] = altas[0].publi;
+
+		params["altasClientes[0].instalacion"] = altas[0].instalacion;
+
+		params["altasClientes[0].conocido"] = altas[0].conocido;
+		params["altasClientes[0].objetivo"] = altas[0].objetivo;
+
+		params["altasClientes[0].formaPago"] = altas[0].formaPago;
+		params["altasClientes[0].formaPagoCurso"] = altas[0].formaPago;
+
+		if (altas[0].precio == "")
+			altas[0].precio = 0;
+		if (altas[0].precioMatricula == "")
+			altas[0].precioMatricula = 0;
+		if (altas[0].precioInicial == "")
+			altas[0].precioInicial = 0;
+		if (altas[0].precioInicialMatricula == "")
+			altas[0].precioInicialMatricula = 0;
+
+		params["altasClientes[0].precio"] = document
+				.getElementById("prorrateo").innerHTML;
+		params["altasClientes[0].precioInicial"] = altas[0].precioInicial;
+		params["altasClientes[0].precioInicialMatricula"] = altas[0].precioInicialMatricula;
+		params["altasClientes[0].precioMatricula"] = document
+				.getElementById("matricula").innerHTML;
+		params["altasClientes[0].tipoCurso"] = altas[0].tipoCurso;
+		params["altasClientes[0].esMenor"] = 0;
+		params["altasClientes[0].altaFinalizada"] = 0;
+
+		if (clienteNuevo == true) {
+			params["altasClientes[0].clienteNuevo"] = true;
+		} else {
+			params["altasClientes[0].clienteNuevo"] = false;
+		}
+
+		if (clientePotencial == true) {
+			params["altasClientes[0].clientePotencial"] = true;
+		} else {
+			params["altasClientes[0].clientePotencial"] = false;
+		}
+
+		if (recibosPendientes == true) {
+			params["altasClientes[0].recibosPendientes"] = true;
+		} else {
+			params["altasClientes[0].recibosPendientes"] = false;
+		}
+
+		params["idInstalacion"] = $("#select-location").val();
+
+		if ($("#idDniAmigo").val() == "") {
+			params["altasClientes[0].dniSocio"] = null;
+		} else {
+			params["altasClientes[0].dniSocio"] = altas[0].dniSocio;
+		}
+		
+		if($("#checkDatos").is(":checked")){
+			params["altasClientes[0].tratamientoDatos"] = 1;
+		}else{
+			params["altasClientes[0].tratamientoDatos"] = 0;
+		}
+		if($("#checkComunic").is(":checked")){
+			params["altasClientes[0].comunicacionesComerciales"] = 1;
+		}else{
+			params["altasClientes[0].comunicacionesComerciales"] = 0;
+		}
+		
+		if($("#checkOfertas").is(":checked")){
+			params["altasClientes[0].ofertasPersonalizadas"] = 1;
+		}else{
+			params["altasClientes[0].ofertasPersonalizadas"] = 0;
+		}
+			
+		$.ajax({
+			url : "/GestPlus/pagoCuotaAltaOnline",
+			type : "POST",
+			data : params,
+			// myDataTable migth not exist
+			success : function(data, textStatus) {
+
+				var errorMessage = data.error;
+
+				if (typeof (errorMessage) !== "undefined"
+						&& errorMessage !== null && errorMessage !== '') {
+					alert("Se ha producido un error: " + errorMessage);
+				} else {
+					if($("#select-location").val() == 2){//es jeréz
+						$('#pasarelaIframePay').attr('src', data.urlPagoPaycomet);  
+					}else{
+						paramPurchase = data.paramPurchase;
+						$("#paramPurchase").val(paramPurchase);
+						signaturePurchase = data.signaturePurchase;
+						$("#signaturePurchase").val(signaturePurchase);
+						$("#purchaseKeyAlta").val(data.purchaseKeyGenerado);
+						purchaseAltaWeb = data.purchaseKeyGenerado;
+						document.getElementById("proximaCuota").innerHTML = data.proximaCuota;
+					}
+				}
+			},
+			dataType : "json"
+		});
+		return true;
+	}
+
+	//DNI NO REGISTRADO
+	var letraDni = function(dni) {
+		return "TRWAGMYFPDXBNJZSQVHLCKE".charAt(dni % 23);
+	}
+
+	var compruebaCliente = function(cli) {
+		if (cli !== "") {
+			var params = {};
+			params["dni"] = cli;
+			params["idInstalacion"] = $("#select-location").val();
+
+			$
+					.ajax({
+						url : "/GestPlus/obtieneDNIByInstalacion",
+						type : "POST",
+						data : params,
+						// myDataTable migth not exist
+						success : function(data, textStatus) {
+
+							var errorMessage = data.error;
+							if (typeof (errorMessage) !== "undefined"
+									&& errorMessage !== null
+									&& errorMessage !== '') {
+								alert("Se ha producido un error: "
+										+ errorMessage);
+							} else {
+								var p = data.cliente;
+								var sCCC = data.iban;
+								if (p !== null) {
+									if (p["estado"] == 1) {
+										swal(
+												"",
+												"El DNI pertenece a un usuario que está ya en alta, no es posible dar de alta al usuario!",
+												"warning");
+
+										$('#dni').val("");
+
+									} else {
+										clienteNuevo = false;
+
+										swal(
+												{
+													title : "Hola "
+															+ data.cliente.nombre
+															+ ", ya tenemos tus datos con otro email. ¿Quieres que lo actualicemos?",
+													//text: "You will not be able to recover this imaginary file!",
+													icon : "warning",
+													buttons : [ 'No acepto',
+															'Acepto' ],
+													dangerMode : true,
+												})
+												.then(
+														function(isConfirm) {
+															if (isConfirm) {
+
+															} else {
+																document
+																		.getElementById("nextBtn").disabled = true;
+																swal(data.cliente.nombre
+																		+ ", ponte en contacto con el centro y te daremos la mejor opción. Gracias.");
+															}
+															document
+																	.getElementById("nombre").style.display = "none";
+															document
+																	.getElementById("nombre").required = false;
+															
+															document.getElementById("password").style.display = "none";
+															document.getElementById("password").required = false;
+															
+															document
+																	.getElementById("apellidos").style.display = "none";
+															document
+																	.getElementById("apellidos").required = false;
+															document
+																	.getElementById("fNacim").style.display = "none";
+															document
+																	.getElementById("fNacim").required = false;
+															document
+																	.getElementById("movil").style.display = "none";
+															document
+																	.getElementById("movil").required = false;
+
+															document
+																	.getElementById("idSexo").style.display = "none";
+															document
+																	.getElementById("objCon").style.display = "none";
+														})
+									}
+
+								} else {
+
+									nuevo1 = true;
+									cod1 = "";
+									$('#dniContr1').val($('#dni1').val());
+
+								}
+							}
+
+						},
+						dataType : "json"
+					});
+		}
+	}
+
+	var compruebaAmigo = function(cli) {
+		if (cli !== "") {
+			var params = {};
+			params["dni"] = cli;
+			params["idInstalacion"] = $("#select-location").val();
+
+			$
+					.ajax({
+						url : "/GestPlus/obtieneDNIByInstalacion",
+						type : "POST",
+						data : params,
+						// myDataTable migth not exist
+						success : function(data, textStatus) {
+
+							var errorMessage = data.error;
+							if (typeof (errorMessage) !== "undefined"
+									&& errorMessage !== null
+									&& errorMessage !== '') {
+								alert("Se ha producido un error: "
+										+ errorMessage);
+							} else {
+								var p = data.cliente;
+								var sCCC = data.iban;
+								if (p !== null) {
+									if (p["estado"] != 1) {
+										swal("No existe ningún socio en este centro con el DNI indicado.");
+										$("#idDniAmigo").val("");
+
+									}
+
+								} else {
+									$("#idDniAmigo").val("");
+									swal("DNI NO VÁLIDO");
+								}
+							}
+
+						},
+						dataType : "json"
+					});
+		}
+	}
+
+	/*
+	 *  PASO 5: PASARELA DE PAGO
+	 */
+
+	var fn_pago = function() {
+
+		if ($("#codPromo").val().startsWith("0000") == true) {//si el codigo empieza por 0000, no tiene que ir a la pasarela de pago
+			swal({
+				title : "Elija la forma de pago",
+				//text: "You will not be able to recover this imaginary file!",
+				icon : "warning",
+				buttons : [ 'Pago Online', 'En el centro' ],
+				dangerMode : true,
+			})
+					.then(
+							function(isConfirm) {
+								if (isConfirm) {
+									pagaYa = 0;
+									var params = {};
+									params["purchaseKeyAlta"] = $(
+											"#purchaseKeyAlta").val();
+
+									$
+											.ajax({
+												url : "/GestPlus/altaWebCentro",
+												type : "POST",
+												data : params,
+												// myDataTable migth not exist
+												success : function(data,
+														textStatus) {
+
+													var errorMessage = data.error;
+
+													if (typeof (errorMessage) !== "undefined"
+															&& errorMessage !== null
+															&& errorMessage !== '') {
+														alert("Se ha producido un error: "
+																+ errorMessage);
+													}
+												},
+												dataType : "json"
+											});
+									} else {
+										pagaYa=1;
+										nextPrev(1);//muestra la pasarela de pago
+										
+									}
+								})
+		} else {
+			pagaYa=1;
+			nextPrev(1); 
+		}
+	}
+	
+	var fn_purchase  = function() {
+		if(pagaYa == 1){
+			if($("#select-location").val() == 2){// si es jeréz
+				document.getElementById("pasarelaIframePay").style.display = "block";
+			}else{
+				document.getElementById("pasarelaIframe").style.display = "block";
+			}
+			document.getElementById("botonera").style.display= "none"; 
+			document.getElementById("regForm").style.display = "none";
+			$('#frmPurchase').submit();
+		}else{
+			fn_urlOkeymas();
+		}
+	}
+
+	/*
+	 *  PASO 6: DOMICILIAR PAGO
+	 */
+
+	var fn_domiciliar = function() {
+		
+		console.log("purchaseKeyAlta:", parent.purchaseAltaWeb);  
+		
+		var params = {}; 
+
+		params["iban"] = $("#iban").val();
+		params["purchaseKeyAlta"] = parent.purchaseAltaWeb;
+		$.ajax({
+			url : "/GestPlus/domiciliarPago",
+			type : "POST",
+			data : params,
+			// myDataTable migth not exist
+			success : function(data, textStatus) {
+
+				var errorMessage = data.error;
+
+				if (typeof (errorMessage) !== "undefined"
+						&& errorMessage !== null && errorMessage !== '') {
+					alert("Se ha producido un error: " + errorMessage);
+				}else{
+			 
+				   	//var urlcalendario = "http://46.27.142.58:9094/GestPlus/altaOnlineUX";
+					//window.location.replace(urlcalendario);
+				}
+			},
+			dataType : "json"
+		});
+		return true;
+
+	}
+	
+	
+	/**
+	PASO 7 VOLVER  A OKEYMAS
+	*/
+	
+	var fn_urlOkeymas = function() {
+
+		var href = "https://okeymas.es/";
+	   	window.location.href = href; 
+		return true;
+
+	}
+	
+	/*
+
+	DESPUÉS DEL PAGO EN LA PASARELA, QUE APAREZCA LA PARTE DE PODER DOMICILIAR LA CUOTA
+
+	*/
+
+	var fn_capaDomiciliar = function(pagoOK) { 
+
+		if(pagoOK == 1){ 
+			//presentar la capa de domiciliar
+			nextPrev(10);
+		}
+
+	}
+	
+	
+	var loader = new YAHOO.util.YUILoader(
+			{
+				base : "/GestPlus/resources/yui/2.8.0r4/",
+				require : [ "container", "datasource", "datatable", "dom",
+						"element", "event", "json", "paginator", "yahoo",
+						"tabview", "button" ],
+				loadOptional : true,
+				combine : false,
+				filter : "MIN",
+				onSuccess : function() {
+					
+					fn_capaDomiciliar(pagoOK); 
+					
+					/*
+					 * PASO 1: ELEGIR CENTRO
+					 */
+
+					$("#select-location")
+							.change(
+									function() {
+										if (nUltimoPaso < 1) {
+											nUltimoPaso = 1;
+										}
+										$("#codPromo").val("");
+										cleanPlan();
+										//comprueba si tiene códigos promocionales y si tiene que muestre el codigo promocional
+										var params = {};
+										var s = document
+												.getElementsByName("inst")[0];
+										for (i = 0; i < s.options.length; i++) {
+											if (s.options[i].selected) {
+												params["sInstalacion"] = s.options[i].innerHTML;
+												break;
+											}
+										}
+										$
+												.ajax({
+													url : "/GestPlus/getCodPromosByInstalacion",
+													type : "POST",
+													data : params,
+													// myDataTable migth not exist
+													success : function(data,
+															textStatus) {
+
+														var errorMessage = data.error;
+
+														if (typeof (errorMessage) !== "undefined"
+																&& errorMessage !== null
+																&& errorMessage !== '') {
+															alert("Se ha producido un error: "
+																	+ errorMessage);
+														} else {
+															traeCuotas(null);
+														}
+													},
+													dataType : "json"
+												});
+										return false;
+									});
+
+					$("#idVieneDe")
+							.change(
+									function() {
+										if ($("#idVieneDe").val() == "Recomendación de un socio") {
+											document
+													.getElementById("idDniAmigo").style.display = "block";
+										} else {
+											document
+													.getElementById("idDniAmigo").style.display = "none";
+										}
+										return false;
+									});
+
+					$("#idDniAmigo").change(function() {
+						compruebaAmigo($("#idDniAmigo").val());
+					});
+
+					$('#dni').change(function() {
+						compruebaCliente($("#dni").val());
+						// 					if(letraDni($("#dni").val())){
+						// 						compruebaCliente($("#dni").val());
+						// 					}else{
+
+						// 					}
+
+					});
+
+				}// success
+			});
+	loader.insert();
+	$( function() {
+		 
+		console.log(bowser.name, bowser.version);
+		if(bowser.name=="Safari"){
+			//$("#fNacim").datepicker();
+			//document.getElementById('fNacim').type = 'datepicker';
+			console.log("es safari!");
+		}
+		/*if(bowser.name=="Safari"){
+			document.getElementById('fNacim').type = 'datepicker';
+		}*/
+		
+	} );
+</script>
+
+<nav class="navbar p-3 d-none d-sm-flex">
+  <a class="navbar-brand" href="https://okeymas.es/">
+    <img alt="" class="d-inline-block align-top" height="30"
+         src="resources/altasWeb/images/logo.svg" width="30">
+  </a>
+</nav>
+<main class="container steps_container p-0 px-sm-3">
+  <div class="steps_header_top d-flex
+                text-white-50 justify-content-between align-items-center p-3 p-sm-4">
+    <div class="lh-100">
+      <h6 class="mb-0 lh-100 text-white">ÚNETE A <b>OKEYMAS</b></h6>
+      <small class="d-none d-sm-inline">¡De la forma más sencilla!</small>
+    </div>
+    <div class="lh-100">
+      <h6 class="mb-0 lh-100 steps_header_aside text-right">Alta de usuario</h6>
+    </div>
+    <div class="steps_progress_bar"></div>
+  </div>
+  <form class="steps_content px-3 py-4 p-sm-4" id="regForm">
+    <ul>
+
+      <!-- Paso 1: Selección de Gimnasio ------------------------------------------------------------------------>
+      <li class="step step-1">
+
+        <!-- Encabezado de Paso 1------------------------------------------------------------------------------>
+        <div class="steps_header_counter
+                         d-flex align-items-center text-white-50">
+          <i class="mr-2 lnr lnr-map-marker"></i>
+          <div>
+            <small>1 de 5</small>
+            <h6 class="mb-0 text-white">Elige tu gimnasio</h6>
+          </div>
+        </div>
+
+        <!-- Formulario de Paso 1 ----------------------------------------------------------------------------->
+        <div class="form-group">
+
+		<select name="inst" id="select-location" class="form-control" oninput="this.classList.remove('is-invalid');">
+    <option value="42">BARCELONA</option>
+    <option value="8">ALGECIRAS</option>
+    <option value="16">ANDUJAR</option>
+    <option value="10">CASTELLÓN</option>
+    <option value="17">CÓRDOBA</option>
+    <option value="9">EL PUERTO DE SANTA MARIA</option>
+    <option value="7">EL PUERTO DE SANTA MARIA - LAS SALINAS</option>
+    <option value="12">HUELVA</option>
+    <option value="4">PILAS</option>
+    <option value="1">SAN FERNANDO</option>
+    <option value="20">SANLUCAR DE BARRAMEDA</option>
+    <option value="38">UTRERA</option>
+    <option value="3">ZARAGOZA</option>
+    <option value="47">ZARAGOZA SANTIAGO</option>
+
+
+</select>
+
+          <div class="invalid-feedback" id="notSelectInst" style="display:none;">  
+            Por favor, elige un centro para continuar.
+          </div>
+        </div>
+
+        <div id="info-location" class="text-white-50 info-block">
+          <p class="mt-4 mb-3">
+            <i class="lnr lnr-map-marker"></i>
+            <small id="location"> 
+              &nbsp;<a href="https://goo.gl/maps/796cqya6jq5jfSRF9" target="_blank" class="d-block">Ver mapa</a>
+            </small>
+          </p>
+          <p>
+            <i class="lnr lnr-phone"></i>
+            <small id="telephone"></small>
+          </p>
+        </div>
+
+      </li>
+
+      <!-- Paso 2: Selección de Plan y Código Promocional ------------------------------------------------------->
+      <li class="step step-2">
+
+        <!-- Encabezado de Paso 2 ------------------------------------------------------------------------------>
+        <div class="row align-items-center">
+          <div class="col-md-5">
+            <div class="steps_header_counter
+                         d-flex align-items-center text-white-50">
+              <i class="mr-2 lnr lnr-diamond"></i>
+              <div>
+                <small>2 de 5</small>
+                <h6 class="mb-0 text-white">Selecciona tu plan</h6>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-7">
+            <small class="form-text text-muted mb-2">
+              Si tienes un código promocional, introdúcelo aquí y haz click en
+              añadir (opcional)
+            </small>
+            <div class="input-group mb-3 mb-sm-3">
+              <input class="form-control" placeholder="Código promocional" type="text" id="codPromo">
+              <div class="input-group-apppend">
+                <button class="btn btn-outline-light" onclick="aplicarCodPromo()">Añadir</button>
+              </div>
+              <small class="valid-feedback">
+                Añadido correctamente
+              </small>
+            </div>
+          </div>
+        </div> 
+
+        <!-- Formulario de Paso 2 ------------------------------------------------------------------------------>
+        <div class="plan_container">
+          <div class="invalid-feedback mt-4 mb-2" id="notSelectCuota" style="display:none;">
+            Por favor, selecciona un plan para continuar con el alta.
+          </div>
+          <label class="card plan_item bg-custom mt-5 mt-sm-4" id="c1">
+            <input required name="plan" oninput="this.classList.remove('is-invalid')" type="radio" id="idCuota1"
+                   value="mensual">
+            <div class="plan_item_inner" onclick="clickImagen(1);">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <h5 id="titulo1"></h5>
+                  <h6 id="precioSinPromo1"></h6>
+                </div>
+              </div>
+              <div class="card-body">
+               <ul id="descCuota1"></ul>
+              </div>
+            </div>
+          </label>
+          <label class="card plan_item bg-custom mt-5 mt-sm-4" id="c2">
+            <input required name="plan" oninput="this.classList.remove('is-invalid')" type="radio" id="idCuota2"
+                   value="anual">
+            <div class="plan_item_inner" onclick="clickImagen(2);">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <h5 id="titulo2"></h5>
+                  <h6 id="precioSinPromo2"></h6>
+                </div>
+              </div>
+              <div class="card-body">
+                <ul id="descCuota2"></ul>
+              </div>
+            </div>
+          </label>
+          <label class="card plan_item bg-custom mt-5 mt-sm-4" id="c3">
+            <input required name="plan" oninput="this.classList.remove('is-invalid')" type="radio" id="idCuota3"
+                   value="anual">
+            <div class="plan_item_inner" onclick="clickImagen(3);">
+              <div class="card-header">
+                <div class="d-flex justify-content-between">
+                  <h5 id="titulo3"></h5>
+                  <h6 id="precioSinPromo3"></h6>
+                </div>
+              </div>
+              <div class="card-body">
+                <ul id="descCuota3"></ul>
+              </div>
+            </div>
+          </label>
+        </div>
+      </li>
+
+      <!-- Paso 3: Confirmación de email -------------------------------------------------------->
+      <li class="step step-3">
+
+        <!-- Encabezado de Paso 3 ------------------------------------------------------------------------------>
+        <div class="steps_header_counter
+                         d-flex align-items-center text-white-50">
+          <i class="mr-2 lnr lnr-envelope"></i>
+          <div>
+            <small>3 de 5</small>
+            <h6 class="mb-0 text-white">Confirma tu correo electrónico</h6>
+          </div>
+        </div>
+
+        <!-- Formulario de Paso 3 --------------------------------------------------------------------------->
+        <div class="form-row">
+          <div class="col-sm-8">
+            <div class="form-group">
+              <input class="form-control" oninput="this.classList.remove('is-invalid')"
+                     placeholder="Correo electrónico" required
+                     type="text" id="email">
+              <small class="form-text text-muted">
+                Al hacer click en "Verificar", enviaremos a tu correo un código que deberás introducir a continuación.
+              </small>
+              <div class="invalid-feedback">
+                El formato del correo electrónico introducido no es válido.
+              </div>
+              <div class="valid-feedback">
+                Código de verificación enviado correctamente. Revisa tu correo.
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <button class="btn btn-outline-light btn-block" onclick="envioCodigoVerif()">Verificar</button>
+          </div>
+        </div>
+        
+        
+        
+          <div class="form-group">
+            <input class="form-control" oninput="this.classList.remove('is-invalid')"
+                   placeholder="Código de verificación" type="text" id="codigoVerif" >
+            <small class="d-flex form-text text-muted">
+              <i class="lnr lnr-envelope"></i>
+              Introduce ahora el código que has recibido en tu correo electrónico.
+            </small>
+            <div class="invalid-feedback">
+              El código introducido no es correcto.
+            </div>
+          </div>
+		  
+		  <div class="form-group">
+          <small class="d-flex form-text text-muted"> 
+              CLÁUSULA:
+				En cumplimiento de la actual normativa en materia de Protección de Datos de Carácter Personal, le informamos que cualquier dato de carácter personal que nos haya facilitado, será tratado por tiempo indefinido, mientras que no comunique lo contrario, por DEPOROCIO INVERSIONES S.L. con la finalidad de prestar los servicios solicitados, atender sus consultas y enviarle información que pueda ser de su interés. El destinatario podrá ejercitar sus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento, portabilidad de datos y a no ser objeto de decisiones individualizadas automatizadas (incluida la elaboración de perfiles), enviando solicitud con asunto Protección de Datos, a la dirección: Polígono Industrial El Palmar. C/ El Palmar, s/n. 11500. El Puerto de Santa María, Cádiz, o por email a  info@okeymas.es, desde la misma cuenta que nos facilitó, indicando en todo caso, los datos de contacto y adjuntando copia de su documento de identidad. Si considera que sus derechos han sido vulnerados, puede presentar una reclamación ante la Agencia Española de Protección de Datos (www.aepd.es).
+				El contenido de este correo electrónico y sus anexos es estrictamente confidencial. La divulgación o el suministro, en todo o en parte, a un tercero, no podrá ser realizada sin consentimiento expreso del remitente. En caso de que no sea el destinatario y haya recibido este mensaje por error, deberá comunicarlo al remitente inmediatamente sin difundir o guardar copia del mismo.
+            </small>
+          </div>
+      
+      </li>
+
+      <!-- Paso 4: Datos Personales -------------------------------------------------------->
+      <li class="step step-4">
+
+        <!-- Encabezado de Paso 4 ------------------------------------------------------------------------------>
+        <div class="steps_header_counter
+                         d-flex align-items-center text-white-50">
+          <i class="mr-2 lnr lnr-user"></i>
+          <div>
+            <small>4 de 5</small>
+            <h6 id="completaDatos" class="mb-0 text-white">Completa tus datos</h6>
+            
+          </div>
+        </div>
+
+        <!-- Formulario de Paso 4 --------------------------------------------------------------------------->
+        <div class="form-row">
+          <div class="col-md-4">
+            <input autocomplete="" class="form-control mb-3"
+                   oninput="this.classList.remove('is-invalid')"
+                   placeholder="DNI" required
+                   type="text"
+                   id="dni">
+          </div>
+          <div class="col-md-6 mb-3">
+            <input class="form-control" oninput="this.classList.remove('is-invalid')"
+                   placeholder="Nombre" required
+                   type="text" id="nombre">
+          </div>
+          <div class="col-md-6 mb-3">
+            <input class="form-control" oninput="this.classList.remove('is-invalid')"
+                   placeholder="Apellidos" required
+                   type="text" id="apellidos">
+          </div>
+		  <div class="col-md-6 mb-3">
+            <input class="form-control" oninput="this.classList.remove('is-invalid')"
+                   placeholder="Contraseña APP" required
+                   type="text" id="password">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="col-md-8">
+            <input class="form-control mb-3"
+                    oninput="this.classList.remove('is-invalid')"
+                    placeholder="Fecha de nacimiento" required
+                    type="date"
+                    id="fNacim">
+          </div>
+       
+        </div>
+
+        <div class="form-row">
+          <div class="col-md-6">
+            <input autocomplete="tel" class="form-control mb-3"
+                   oninput="this.classList.remove('is-invalid')"
+                   placeholder="Nº móvil" required
+                   type="tel"
+                   id="movil">
+          </div>
+          <div class="col-md-6">
+
+				<select name="idSexo" id="idSexo" class="form-control mb-5" oninput="this.classList.remove('is-invalid')">
+    <option value="H">Hombre</option>
+    <option value="M">Mujer</option>
+
+
+</select>
+
+          </div>
+        </div>
+
+        <div class="form-group" id="objCon">
+
+					
+		<select name="idVieneDe" id="idVieneDe" class="form-control mb-3" oninput="this.classList.remove('is-invalid')">
+    <option value="Recomendación de un socio">Recomendación de un socio</option>
+    <option value="Redes sociales">Redes sociales</option>
+    <option value="Carta - Buzoneo">Carta - Buzoneo</option>
+    <option value="Vecino del Barrio">Vecino del Barrio</option>
+    <option value="Promoción">Promoción</option>
+    <option value="Llamada Centro">Llamada Centro</option>
+
+
+</select>
+
+
+		<div class="col-md-4">
+			<input autocomplete="" class="form-control mb-3"
+				oninput="this.classList.remove('is-invalid')" placeholder="DNI"
+				type="text" id="idDniAmigo" style="display: none;"> 
+		</div>
+
+
+          
+          <select name="idObjetivo" id="idObjetivo" class="form-control" oninput="this.classList.remove('is-invalid')">
+    <option value="Perdida de Peso">Perdida de Peso</option>
+    <option value="Tonificación">Tonificación</option>
+    <option value="Readaptación">Readaptación</option>
+    <option value="Rendimiento">Rendimiento</option>
+    <option value="Mejora condición física">Mejora condición física</option>
+    <option value="Diversión">Diversión</option>
+
+
+</select>
+
+						 
+        </div>
+      </li>
+
+      <!-- Paso 5: Confirmación --------------------------------------------------------------------------------->
+      <li class="step step-5 text-white-50">
+
+        <!-- Encabezado de Paso 5  ---------------------------------------------------------------------------->
+        <div class="steps_header_counter
+                         d-flex align-items-center text-white-50">
+          <i class="mr-2 lnr lnr-license"></i>
+          <div>
+            <small>5 de 5</small>
+            <h6 class="mb-0 text-white">Resumen de tu inscripción</h6>
+          </div>
+        </div>
+
+        <div class="resume-container">
+          <small class="text-white-50">Centro elegido</small>
+          <h5 class="mt-1" id="centroElegido"></h5>
+          <h6 class="mt-3" id="planElegido"></h6>
+          <ul class="mt-5 pb-5">
+            <li class="listed">
+              <p>Matrícula</p>
+              <strong id="matricula"></strong>
+            </li>
+            <li class="listed">
+              <p id="mesesPagados"></p>
+              <strong id="prorrateo"></strong>
+            </li>
+            <li class="bordered mt-3 mb-3">
+              <p class="text-white">Total</p>
+              <strong id="total"></strong>
+            </li>
+            <li>
+              <p>Periodicidad</p>
+              <strong id="periodicidad"></strong>
+            </li>
+            <li class="mt-5">
+              <p class="text-white">Tu próxima cuota mensual será el 1 de </p> 
+				<p class="text-white" id="proximaCuota"></p>
+              <strong id="cuotaPosterior"></strong>
+            </li>
+          </ul>
+        </div>
+        <div class="form-check d-flex">
+			  <input class="form-check-input" id="checkDatos" onchange="if(this.checked==true) this.removeAttribute('required'); else this.setAttribute('required', 'required');"
+					 type="checkbox" value="" required>
+			  <label class="form-check-label text-white-50" for="checkData" >
+				<small>Acepto la totalidad de condiciones del  </small>
+				<small><a href="http://82.223.22.233:8080/GestPlus/resources/AvisoLegalDeporOcio.pdf" target="_blank">Aviso Legal,</a></small>
+				 <small><a href="http://82.223.22.233:8080/GestPlus/resources/PoliticaPrivacidad.pdf" target="_blank">Política de Privacidad y </a></small>
+		         <small><a href="http://82.223.22.233:8080/GestPlus/resources/CondGeneralesContratacion.pdf" target="_blank">Condiciones Generales de Contratación</a></small>
+			  </label>
+			  <div class="invalid-feedback">
+				Debes aceptar los términos.
+			  </div>
+			</div>
+        <div class="form-check d-flex">
+          <input class="form-check-input" id="checkComunic" oninput="this.classList.remove('is-invalid')"
+                 type="checkbox" value="">
+          <label class="form-check-label text-white-50" for="checkComunic" >
+            <small>Autorizo a recibir comunicaciones comerciales sobre los productos y servicios de las sociedades que componen GRUPO DEPOROCIO por e-mail, correo ordinario, teléfono o servicios de mensajería.</small></label>
+        </div>
+         <div class="form-check d-flex">
+          <input class="form-check-input" id="checkOfertas" oninput="this.classList.remove('is-invalid')"
+                 type="checkbox" value="">
+          <label class="form-check-label text-white-50" for="checkOfertas">
+            <small>Autorizo a recibir ofertas personalizadas de productos y servicios que GRUPO DEPOROCIO pueda determinar en función de mis características, comportamiento y mis preferencias personales, así como del uso que hago de los productos o servicios.</small></label>
+        </div>
+      </li>
+
+      <!-- Paso de confirmación -------------------------------------------------->
+      <li class="step step-succesfull bg-custom">
+        <div class="jumbobox text-center px-sm-0 px-md-5">
+          <i class="lnr lnr-checkmark-circle text-success"></i>
+          <h2 class="h5 text-white mt-2 mb-3">¡Enhorabuena!</h2>
+<!--
+          <p class="mt-4">Acabas de unirte al movimiento que va a cambiar tu vida.
+            Ya puedes empezar a entrenar con un equipo enfocado
+            en que tú lo pases bien.</p>
+-->
+          <p>Gracias por unirte a Okeymas. Tu inscripción se ha realizado correctamente.
+            Te hemos enviado un correo electrónico con la confirmación de tu alta.</p>
+        </div>
+
+        <div class="domiciliation-box mt-5 p-3">
+          <h6 class="text-white">DOMICILIA TU CUOTA <span class="badge badge-info text-black-50"></span></h6>
+          <p class="text-white-50"><small>Es obligatoria la domiciliación en cuotas mensuales. Al llegar al centro te tendremos preparado el contrato para que puedas firmarlo.</small>
+          </p>
+          <div class="form-group">
+            <input class="form-control mt-4"
+                   oninput="this.classList.remove('is-invalid')" placeholder="Número de cuenta bancaria (IBAN)"
+                   type="text" id="iban">
+            <div class="invalid-feedback">
+              El formato del número de cuenta no es correcto. Por favor, revísalo.
+            </div>
+          </div>
+          <div class="form-check mt-2 mb-3 d-flex">
+            <input class="form-check-input" id="checkSepa" oninput="this.classList.remove('is-invalid')"
+                   type="checkbox" value="" required>
+            <label class="form-check-label text-white-50" for="checkSepa">
+              <small>Autorizo la domiciliación de los cargos derivados de los
+                servicios prestados por el grupo DEPOROCIO (Orden SEPA).</small>
+            </label>
+          </div>
+          <div class="valid-feedback mb-2">
+            Tu domiciliación ha quedado correctamente registrada.
+            Te hemos enviado un correo electrónico con la confirmación del alta en el servicio.
+          </div>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-next btn-info" onclick="fn_domiciliar()">Añadir cuenta</button>
+          </div>
+        </div>
+      </li>
+      
+       <li class="step step-6">
+ 
+      </li>
+      
+       <li class="step step-7">
+      	<!-- pasarela de pago ------------------------------------------------------------------------>
+		<input type="submit" name="pagoTPV" value="" form="frmPurchase" />
+      </li>
+      
+    </ul>
+  </form>
+  <div class="d-flex btn-container justify-content-between px-3 px-sm-4 py-3 py-sm-4" id="botonera">
+    <button class="btn btn-back btn-lg" id="prevBtn" onclick="nextPrev(-1)"
+            type="button">Anterior
+    </button>
+    <button class="btn btn-next btn-lg" id="nextBtn" onclick="nextPrev(1)" type="button">Siguiente
+    </button>
+  </div>
+  
+   <footer class="d-flex text-white-50 justify-content-between align-items-center p-3 p-sm-4">
+			<small><a href="http://82.223.22.233:8080/GestPlus/resources/AvisoLegalDeporOcio.pdf" target="_blank" style="color: aliceblue;">Aviso Legal</a></small>
+			<small><a href="http://82.223.22.233:8080/GestPlus/resources/PoliticaPrivacidad.pdf" target="_blank" style="color: aliceblue;">Política de Privacidad</a></small>
+		    <small><a href="http://82.223.22.233:8080/GestPlus/resources/CondGeneralesContratacion.pdf" target="_blank" style="color: aliceblue;">Condiciones Generales de Contratación</a></small>
+  </footer>
+  
+	<!-- REDSYS -->
+	<div id="card-form"> 
+		<form id="frmPurchase" action="https://sis.redsys.es/sis/realizarPago" 
+			method="POST" class="form-horizontal" style="height: 1px;"
+			target="pasarelaIframe">
+			<fieldset>
+				<div class="form-group">
+					<div class="col-md-10">
+						<input type="hidden" name="Ds_SignatureVersion"
+							value="HMAC_SHA256_V1" />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-10">
+						<input type="hidden" name="Ds_MerchantParameters" id=paramPurchase />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-10">
+						<input type="hidden" name="Ds_Signature" id=signaturePurchase />
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+   <iframe name="pasarelaIframe" id="pasarelaIframe" 	style="display: none;width: 100%;height: 900px;"> </iframe>
+		
+		
+		<!-- PAYCOMET -->
+		<iframe name="pasarelaIframePay" id="pasarelaIframePay" src="#"	style="display: none;width: 100%;height: 900px;background-color: white;"> </iframe>
+			
+	<input type="hidden" name="idCuota" id=idCuota />
+	<input type="hidden" name="formaPagoCuota" id=formaPagoCuota />
+ 
+</main>
+
+<input style="display:none;" name=purchaseKeyAlta id=purchaseKeyAlta  /> 
+
+<script src="resources/altasWeb/main.min.js" ></script>
+
+<script type="text/javascript">
+
+	fn_add_option_select();
+</script>
+</body>
+
+<!-- Mirrored from gestplus.okmas.net/GestPlus/altaOnlineUX by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 10:35:43 GMT -->
+</html>
+
+<style type="text/css">
+.hiddenDiv {
+	display: none;
+}
+
+.showDiv {
+	display: block;
+}
+
+</style>
+
+<div id="loadingDiv"
+		style="z-index: 10002; position: fixed; top: 0px; left: 0px; overflow: visible; height: 100%; width: 100%; background: #FFFFFF; -ms-filter: progid:             DXImageTransform.Microsoft.Alpha(             Opacity=             80); filter: alpha(opacity =             80); -moz-opacity: 0.8; opacity: 0.8; -khtml-opacity: 0.8;"
+		class="hiddenDiv" >
+		<table align="center" style="height: 100%; width: 100%">
+			<tr valign="middle">
+				<td height="100%" width="100%" valign="middle" align="center">
+					<br> <br> <br> <br> <br> <br> <br>
+					<br> 
+<!-- 				<img src="data:image/png;base64,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" />" />  -->
+			<img src="../../localhost_8080/GestPlus/resources/image/loadingCustom.gif" />  
+
+				</td>
+			</tr>
+		</table>
+	</div>

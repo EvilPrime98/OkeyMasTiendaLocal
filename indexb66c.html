@@ -1,0 +1,361 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//ES" "http://www.w3.org/TR/html4/strict.dtd">
+
+
+
+
+
+
+
+<html>
+	
+
+<!-- Mirrored from gestplus.okmas.net/GestPlus/?next=/img/thumbnail-8.jpg by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 10:35:45 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=UTF-8" /><!-- /Added by HTTrack -->
+<meta http-equiv="refresh" content="32400;url=login.html"/>
+
+<head>
+<link rel="shortcut icon" href="resources/image/icon.png" type="image/x-icon">
+<link rel="icon" href="resources/image/icon.png" type="image/x-icon">
+<title>GESTPLUS - Acceso</title>
+
+<link rel="stylesheet"
+	href="resources/yui/2.8.0r4/reset-fonts-grids/reset-fonts-grids.css"
+	type="text/css">
+<link rel="stylesheet" type="text/css"
+	href="resources/style/g.min.css" />
+
+<script type="text/javascript"
+	src="resources/yui/2.8.0r4/yuiloader/yuiloader-min.js"></script>
+<script type="text/javascript"
+	src="resources/script/jquery-1.3.2.min.js"></script>
+<script type="text/javascript"
+	src="resources/script/jquery-blockUI-1.33.js"></script>
+<script type="text/javascript"
+	src="resources/script/jquery.form.js"></script>
+
+<script type="text/javascript"
+	src="resources/script/keycoes.min.js"></script>
+	<script src="resources/script/yui-min.js"></script>
+
+	<script
+	src="resources/script/Blob.js">"</script>
+
+
+<meta name="author" content="DeporOcio" />
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+
+<style type="text/css">
+.hiddenDiv {
+	display: none;
+}
+
+.showDiv {
+	display: block;
+}
+
+.yui-dt-liner {
+	height: 20pt;
+}
+
+.yui-skin-sam .yui-dt td {
+	border right: 0px;
+}
+
+.enlace {
+	text-decoration: underline;
+	color: #FFF !important;
+}
+</style>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		var limitLength = function(select) {
+			$(select).find('option').each(function() {
+				var text = $(this).text();
+				var maxLength = 60;
+				if (text.length > maxLength) {
+					$(this).text(text.substr(0, maxLength) + '...');
+				}
+			});
+		};
+
+		$("select").each(function() {
+			limitLength($(this));
+		});
+		$("body").ajaxComplete(function() {
+			$("select").each(function() {
+				limitLength($(this));
+			});
+		});
+
+	});
+</script>
+</head>
+<body class="yui-skin-sam">
+
+	<div id="doc3">
+		<div id="hd">
+			
+			<div id="navigation">
+				
+				
+			</div>
+		</div>
+		<div id="bd">
+			
+
+<style type="text/css">
+*:focus {
+    outline: 0 !important;
+}
+
+
+
+   /*IPAD RESPONSIVE*/
+   
+   @media only screen   
+and (orientation : portrait)   
+and (-webkit-min-device-pixel-ratio: 1)   
+and (min-device-width : 768px)   
+and (max-device-width : 1024px)  
+
+
+
+{	#doc3 {
+    background: #dedede !important;
+    margin-left: 5px;
+}
+	
+	#mainlogin {
+    background-size: auto 100% !Important;
+    background-position-x: 22% !important;
+}}
+
+select, input, button, textarea, button {
+    font: inherit;
+    color: #888 !important;
+    padding: 10px;
+    font-weight: 200 !important;
+    border: none !important;}
+    
+    span.label {
+    text-align: right;
+    padding-right: 15px;
+    vertical-align: middle;
+    font-weight: 200;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: 1px;
+}
+
+#mainlogin {    
+	background: url(resources/image/fondoOkeyHome2.png);
+    background-size: 100%;
+    background-position-y: 70%;
+    width: 100% !important;
+    position: absolute;
+    height: 100%;
+    margin: -15px 0 0 -15px; }
+    
+#infologin{     
+	margin-top: 10%;
+	/*background: #646464;*/
+    width: 50%;
+    margin-left: 25%;
+} 
+
+#logo{     width: 200px;
+    margin: 30px;
+ }
+    
+input[type="submit"] {
+    background-color: #76b929;
+    padding: 10px 30px;
+    border-radius: 0px;
+    margin-top: 5px;
+    color: white !important;
+    font-size: 14px;
+    font-weight: 300 !important;
+    letter-spacing: 2px;
+}   
+
+input[type="submit"]:hover {
+    background-color: #333 !important;
+    color: #76b929 !important;
+        cursor: pointer;
+}
+
+   /*IPAD RESPONSIVE*/
+   
+   @media only screen   
+and (orientation : portrait)   
+and (-webkit-min-device-pixel-ratio: 1)   
+and (min-device-width : 767px)   
+and (max-device-width : 1007px)  
+{ 
+	
+	#infologin {
+    margin-top: 35% !important;
+        width: 60%;
+    margin-left: 20%;}
+    
+    input{ font-size: 16px; }
+    
+    span .label{ font-size: 14px; }
+    
+    #logo {
+    width: 250px;}
+    
+    input[type="submit"] {
+    font-size: 16px;
+}
+
+}
+    
+</style>
+
+<script>
+var cambiar= '';
+
+function elPwd() {
+	var pwd = document.getElementById("password").value;
+	document.getElementById("passwordMonitor").value = pwd;
+}
+function elUsuario() {
+	var u = document.getElementById("usuario").value;
+	document.getElementById("usuarioMonitor").value = u;
+}
+
+</script>
+
+<div id="mainlogin">
+
+<div id="infologin">
+	<div id="mainlogo"><br/><br/><br/>
+		<img id="logo" src="resources/image/logo_login.png" alt="OKEYMAS" title="OKEYMAS" />
+	</div>
+	<div class="login">
+		<div>
+			<form id="formLogin" name="formLogin" action="https://gestplus.okmas.net/GestPlus/login.action" method="post">
+				<input type="hidden" name="next" value="/img/thumbnail-8.jpg" id="formLogin_next"/>
+				<span class="center">
+					
+				</span>
+				<table>
+					<tr>
+						<td style="    padding-top: 13px;"><span class="label">Usuario</span></td>
+						<td><input type="text" name="usuario" value="" id="usuario" style="width: 100%;" oninput="elUsuario()"/></td>
+					</tr>
+					<tr>
+						<td style="    padding-top: 13px;"><span class="label">Contraseña</span></td>
+						<td><input type="password" name="password" id="password" style="width: 100%;" oninput="elPwd()"/></td>
+					</tr>
+				</table>
+			</form>
+
+
+
+ 
+			<div>
+				<form id="formLoginTecnico" name="formLoginTecnico" action="https://gestplus.okmas.net/GestPlus/loginMonitor.action" method="post">
+					<table style="display:none;">
+						<tr>
+							<td style="    padding-top: 13px;"><span class="label">Usuario</span></td>
+							<td><input type="text" name="usuarioMonitor" value="" id="usuarioMonitor" style="width: 100%;"/></td>
+						</tr>
+						<tr>
+							<td style="    padding-top: 13px;"><span class="label">Contraseña</span></td>
+							<td><input type="password" name="passwordMonitor" id="passwordMonitor" style="width: 100%;"/></td>
+						</tr>
+					</table>
+					
+					<table>
+					<tr>
+						<td></td>
+						<td><input type="submit" id="formLoginTecnico_0" value="Entrar" form="formLogin"/>
+</td>
+						<td><input type="submit" id="formLoginTecnico_2" value="Acceso t&eacute;cnico" form="formLoginTecnico"/>
+</td> 
+					</tr>
+					</table>
+				</form>
+
+
+
+
+			</div>
+			</br> 
+			<div id="cambioPwd" style="display:none;border: inset;"> 
+				<span class="label">Debes cambiar la contraseña</span>
+				<form id="formCambioPwd" name="formCambioPwd" action="https://gestplus.okmas.net/GestPlus/cambiarPwd.action" method="post">
+					<table style="display:none;">
+						<tr>
+							<td style="    padding-top: 13px;"><span class="label">Usuario</span></td>
+							<td><input type="text" name="usuario" value="" id="usuario" style="width: 100%;"/></td>
+						</tr>
+						
+					</table>
+					<table>
+						<tr>
+							<td style="padding-top: 13px;"><span class="label">Contraseña anterior</span></td>
+							<td><input type="text" name="oldPassword" value="" id="formCambioPwd_oldPassword" style="width: 100%;"/></td> 
+						</tr>
+						<tr>
+							<td style="padding-top: 13px;"><span class="label">Contraseña nueva</span></td>
+							<!-- <td><input type="password" name="nuevoPassword" id="formCambioPwd_nuevoPassword" style="width: 100%;"/></td> -->
+							<td><input  required   type="password" id="nuevoPassword" name="nuevoPassword" style="width: 100%;"></td>
+                 
+						</tr>
+						<tr>
+							<td style="padding-top: 13px;"><span class="label">Repite contraseña</span></td>
+							<td><input type="password" name="repitePassword" id="formCambioPwd_repitePassword" style="width: 100%;"/></td>
+						</tr>
+						<tr> 
+							<td><input type="submit" id="formCambioPwd_0" value="Guardar Contrase&ntilde;a" form="formCambioPwd"/>
+</td>
+						</tr>
+					</table>
+				</form>
+
+
+
+
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+
+<script>
+	if(cambiar == 1){ 
+		document.getElementById("cambioPwd").style.display = "block"; 
+	}
+</script>
+
+		</div>
+		<div id="ft">
+			
+
+
+		</div>
+	</div>
+
+	<div id="loadingDiv"
+		style="z-index: 10002; position: fixed; top: 0px; left: 0px; overflow: visible; height: 100%; width: 100%; background: #FFFFFF; -ms-filter: progid:             DXImageTransform.Microsoft.Alpha(             Opacity=             80); filter: alpha(opacity =             80); -moz-opacity: 0.8; opacity: 0.8; -khtml-opacity: 0.8;"
+		class="hiddenDiv">
+		<table align="center" style="height: 100%; width: 100%">
+			<tr valign="middle">
+				<td height="100%" width="100%" valign="middle" align="center">
+					<br> <br> <br> <br> <br> <br> <br>
+					<br> 
+					  
+					<img src="resources/image/loadingCustom.gif" /> 
+				</td>
+			</tr>
+		</table>
+	</div>
+</body>
+
+<!-- Mirrored from gestplus.okmas.net/GestPlus/?next=/img/thumbnail-8.jpg by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 02 Apr 2025 10:35:45 GMT -->
+</html>
