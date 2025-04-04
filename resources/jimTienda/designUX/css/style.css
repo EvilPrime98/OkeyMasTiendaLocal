@@ -2088,8 +2088,10 @@ form {
 .swiper-slide {
     position: relative;
     background-size: cover;
-	background-position: center -250px;
-	background-repeat: no-repeat;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
 }
 
 .swiper-slide::before {
